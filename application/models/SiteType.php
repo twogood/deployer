@@ -1,9 +1,9 @@
 <?php
+namespace Application\Model;
 
-
-class Application_Model_SiteType
+class SiteType
 {
-	private static $DIRECTORY;
+	public static $DIRECTORY;
 	public static $VALID_SITE_TYPES = array('directory');
 
 	private $value;
@@ -11,7 +11,7 @@ class Application_Model_SiteType
 	// Called from global scope below!
 	public static function init()
 	{
-		self::$DIRECTORY = new Application_Model_SiteType('directory');
+		self::$DIRECTORY = new self('directory');
 	}
 
 	public function __construct($value)
@@ -22,11 +22,16 @@ class Application_Model_SiteType
 	}
 
 	public function value()
+	{	
+		return $this->value;
+	}
+
+	public function __tostring()
 	{
 		return $this->value;
 	}
 }
 
-Application_Model_SiteType::init();
+SiteType::init();
 
 

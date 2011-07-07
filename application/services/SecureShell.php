@@ -1,6 +1,13 @@
 <?php
+namespace Application\Service;
 
-class Application_Service_SecureShell
+class SecureShell
 {
+	public function shell($host, $command)
+	{
+	}
 
+	public function uploadFileData($host, $fileName, $fileData)
+	{
+	}
 }

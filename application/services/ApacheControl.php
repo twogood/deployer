@@ -1,6 +1,7 @@
 <?php
+namespace Application\Service;
 
-class Application_Service_ApacheControl
+class ApacheControl
 {
 	private $secureShellService;
 
@@ -9,15 +10,17 @@ class Application_Service_ApacheControl
 		$this->secureShellService = $secureShellService;
 	}
 
-	public function uploadSiteConfig($siteName, $siteConfig)
+	public function uploadSiteConfig($siteName, $siteConfig, $host)
 	{
 		$this->secureShellService->
-			uploadFileData("/etc/apache2/sites-available/$siteName", $siteConfig);
+			uploadFileData($host, 
+			"/etc/apache2/sites-available/$siteName", $siteConfig);
 	}
 
-	public function enableSite($siteName)
+	public function enableSite($siteName, $host)
 	{
 		$this->secureShellService->shell(
+			$host,
 			"/usr/sbin/a2ensite $siteName && sudo /etc/init.d/apache2 reload");
 	}
 	

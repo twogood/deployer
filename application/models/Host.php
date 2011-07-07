@@ -1,6 +1,7 @@
 <?php
+namespace Application\Model;
 
-class Application_Model_Host
+class Host
 {
 	public $name;
 }

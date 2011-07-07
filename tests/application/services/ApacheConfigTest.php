@@ -2,25 +2,12 @@
 
 // XXX: can't get autoloading to work :-(
 
-require_once APPLICATION_PATH . '/services/ApacheConfig.php';
+require_once APPLICATION_PATH . '/services/ApacheConfigDirectory.php';
+
+use Application\Service;
 
 class ApacheConfigTest extends PHPUnit_Framework_TestCase
 {
-/*
-    public function testPushAndPop()
-    {
-        $stack = array();
-        $this->assertEquals(0, count($stack));
- 
-        array_push($stack, 'foo');
-        $this->assertEquals('foo', $stack[count($stack)-1]);
-        $this->assertEquals(1, count($stack));
- 
-        $this->assertEquals('foo', array_pop($stack));
-        $this->assertEquals(0, count($stack));
-    }
-*/
-
     private static function trimAllLines($str)
     {
 	// also removes empty lines
@@ -29,9 +16,9 @@ class ApacheConfigTest extends PHPUnit_Framework_TestCase
 	
     public function testCreateConfigWithoutAlias()
     {
-	$apacheConfigService = new Application_Service_ApacheConfig();
+	$apacheConfigService = new Service\ApacheConfigDirectory();
 
-	$actual = $apacheConfigService->createDefaultConfig('test', array('test1'));
+	$actual = $apacheConfigService->createConfig('test', array('test1'));
 	$this->assertNotNull($actual);
 
 $expected = <<<EOF
@@ -57,9 +44,9 @@ EOF;
 
     public function testCreateConfigWithAlias()
     {
-	$apacheConfigService = new Application_Service_ApacheConfig();
+	$apacheConfigService = new Service\ApacheConfigDirectory();
 
-	$actual = $apacheConfigService->createDefaultConfig('test', array('test1', 'test2'));
+	$actual = $apacheConfigService->createConfig('test', array('test1', 'test2'));
 	$this->assertNotNull($actual);
 
 $expected = <<<EOF
@@ -85,9 +72,9 @@ EOF;
 
     public function testCreateConfigWithExtraConfig()
     {
-	$apacheConfigService = new Application_Service_ApacheConfig();
+	$apacheConfigService = new Service\ApacheConfigDirectory();
 
-	$actual = $apacheConfigService->createDefaultConfig('test', array('test1', 'test2'), 
+	$actual = $apacheConfigService->createConfig('test', array('test1', 'test2'), 
 		'Include /etc/phpmyadmin/apache.conf');
 	$this->assertNotNull($actual);
 

@@ -1,41 +1,27 @@
 <?php
+namespace Application\Service;
 
-class Application_Service_Deploy
+class Deploy
 {
-	private $siteRepository;
-	private $hostRepository;
+	private $repository;
+	private $apacheService;
+	private $secureShellService;
 	
-	public function __construct($siteRepository, $hostRepository)
+	public function __construct($repository, $deployFactory)
 	{
-		$this->siteRepository = $siteRepository;
-		$this->hostRepository = $hostRepository;
+		$this->repository = $repository;
+		$this->deployFactory = $deployFactory;
 	}
 
 
 	public function deploy($siteName, $hostName)
 	{
-		$site = $this->siteRepository->getSite($siteName);
-		$host = $this->hostRepository->getHost($hostName);
+		$site = $this->repository->getSite($siteName);
+		$host = $this->repository->getHost($hostName);
 
-		$deployer = $this->getDeployer($site, $host);
-		$deployer->run();
+		$deployer = $this->deployFactory->getDeployer($site->type);
+		$deployer->deploy($site, $host);
 	}
 
-	protected function getDeployer($site, $host)
-	{
-		switch ($site->type)
-		{
-			case 'directory':
-				return new Application_Service_NormalDeploy($site, $host);
-/*
-			case 'wordpress':
-				break;
-			case 'dokuwiki':
-				break;
-*/
-			default:
-				throw new Exception('Unknown or missing site type: '. $this->type);
-		}
-	}
 
 }

@@ -1,8 +1,16 @@
 <?php
+namespace Application\Model;
 
-class Application_Model_Site
+class Site
 {
 	public $name;
 	public $domainNames = array();
 	public $type; // Application_Model_SiteType
+	public $extraVirtualHostConfig;
+	public $master;
+	
+	public function getDirectory()
+	{
+		return '/var/www/' . $this->name;
+	}
 }

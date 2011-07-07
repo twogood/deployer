@@ -3,35 +3,50 @@
 // XXX: can't get autoloading to work :-(
 
 require_once APPLICATION_PATH . '/services/ApacheControl.php';
+require_once APPLICATION_PATH . '/models/Host.php';
+
+use Application\Model;
+use Application\Service;
 
 class ApacheControlTest extends PHPUnit_Framework_TestCase
 {
 
 	public function testUploadConfiguration()
 	{
-		$secureShellService = new SecureShellMock();
+		$host = new Model\Host();
+		$host->name = 'test-host';
 
 		$siteConfig = "testtesttest";
+
+		$secureShellService = $this->getMock('Application\Service\SecureShell');
+		$secureShellService
+			->expects($this->once())
+			->method('uploadFileData')
+			->with($this->equalTo($host), 
+				$this->equalTo('/etc/apache2/sites-available/test'),
+				$this->equalTo($siteConfig)
+				)
+			;
 		
-		$apacheControlService = new Application_Service_ApacheControl($secureShellService);
-		$apacheControlService->uploadSiteConfig("test", $siteConfig);
-
-		$lastFileName = $secureShellService->getLastFileName();
-		$this->assertEquals('/etc/apache2/sites-available/test', $lastFileName);
-
-		$lastFileData = $secureShellService->getLastFileData();
-		$this->assertEquals($siteConfig, $lastFileData);
+		$apacheControlService = new Service\ApacheControl($secureShellService);
+		$apacheControlService->uploadSiteConfig("test", $siteConfig, $host);
 	}
 
 	public function testEnableSite()
 	{
-		$secureShellService = new SecureShellMock();
+		$host = new Model\Host();
+		$host->name = 'test-host';
 
-		$apacheControlService = new Application_Service_ApacheControl($secureShellService);
-		$apacheControlService->enableSite("test");
+		$secureShellService = $this->getMock('Application\Service\SecureShell');
+		$secureShellService
+			->expects($this->once())
+			->method('shell')
+			->with($this->equalTo($host), 
+				$this->matchesRegularExpression('/a2ensite test.*apache2 reload/')
+				)
+			;
 
-		$lastCommand = $secureShellService->getLastCommand();
-
-		$this->assertRegExp('/a2ensite test.*&&.*apache2 reload/', $lastCommand);
+		$apacheControlService = new Service\ApacheControl($secureShellService);
+		$apacheControlService->enableSite('test-site', $host);
 	}
 }
