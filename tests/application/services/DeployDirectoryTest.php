@@ -37,7 +37,7 @@ class DeployDirectoryTest extends PHPUnit_Framework_TestCase
 		$secureShellService = $this->getMock('Application\Service\SecureShell');
 		$secureShellService
 			->expects($this->once())
-			->method('shell')
+			->method('runCommand')
 			->with($this->equalTo($host), 
 				$this->equalTo("git clone 'ssh://user@host/dir' '/var/www/test-site'")
 				)

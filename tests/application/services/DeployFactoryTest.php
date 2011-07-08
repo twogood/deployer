@@ -11,6 +11,15 @@ use Application\Service;
 
 class DeployFactoryTest extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidType()
+	{
+		$deployFactory = new Service\DeployFactory(null, null);
+		$deployer = $deployFactory->getDeployer(null);
+		$this->assertType('Application\Service\DeployDirectory', $deployer);
+	}
 
 	public function testDirectoryType()
 	{

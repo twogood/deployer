@@ -19,7 +19,7 @@ class ApacheControl
 
 	public function enableSite($siteName, $host)
 	{
-		$this->secureShellService->shell(
+		$this->secureShellService->runCommand(
 			$host,
 			"/usr/sbin/a2ensite $siteName && sudo /etc/init.d/apache2 reload");
 	}

@@ -38,6 +38,25 @@ class RepositoryTest extends PHPUnit_Framework_TestCase
 		$repository->getSite('invalid-site');
 	}
 
+	/**
+
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testInvalidSiteFile()
+	{
+		$repositoryPath = vfsStream::url('root');
+		$sitesPath = $repositoryPath . '/sites';
+		$this->assertTrue(mkdir($sitesPath, 0777, true));
+		$iniData = '?{}|&~![()^ = invalid';
+
+		$siteFilePath = $sitesPath . '/valid-site';
+		$result = file_put_contents($siteFilePath, $iniData);
+		$this->assertNotEquals(false, $result);
+
+		$repository = new Service\Repository($repositoryPath);
+		$repository->getSite('valid-site');
+	}
+
 	public function testValidSite()
 	{
 		$repositoryPath = vfsStream::url('root');

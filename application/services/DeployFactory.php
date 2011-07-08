@@ -26,7 +26,8 @@ class DeployFactory
 				break;
 */
 			default:
-				throw new Exception('Unknown or missing site type: '. $site->type);
+				throw new \InvalidArgumentException(
+					'Unknown or missing site type: '. $siteType);
 		}
 	}
 }

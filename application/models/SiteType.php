@@ -8,11 +8,12 @@ class SiteType
 
 	private $value;
 
-	// Called from global scope below!
+	// @codeCoverageIgnoreStart
 	public static function init()
 	{
 		self::$DIRECTORY = new self('directory');
 	}
+	// @codeCoverageIgnoreEnd
 
 	public function __construct($value)
 	{
@@ -21,16 +22,21 @@ class SiteType
 		$this->value = $value;
 	}
 
-	public function value()
-	{	
-		return $this->value;
-	}
-
 	public function __tostring()
 	{
 		return $this->value;
 	}
 }
+
+/*
+class SiteTypeDirectory extends SiteType
+{ 
+	public function __construct()
+	{
+		parent('directory');
+	}
+}
+*/
 
 SiteType::init();
 

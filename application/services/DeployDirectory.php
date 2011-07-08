@@ -20,7 +20,7 @@ class DeployDirectory
 
 		$master = $site->master;
 		$siteDirectory = $site->getDirectory();
-		$this->secureShellService->shell($host, "git clone '$master' '$siteDirectory'");
+		$this->secureShellService->runCommand($host, "git clone '$master' '$siteDirectory'");
 	}
 
 

@@ -40,7 +40,7 @@ class ApacheControlTest extends PHPUnit_Framework_TestCase
 		$secureShellService = $this->getMock('Application\Service\SecureShell');
 		$secureShellService
 			->expects($this->once())
-			->method('shell')
+			->method('runCommand')
 			->with($this->equalTo($host), 
 				$this->matchesRegularExpression('/a2ensite test.*apache2 reload/')
 				)

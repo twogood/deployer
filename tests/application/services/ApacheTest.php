@@ -2,11 +2,11 @@
 
 // XXX: can't get autoloading to work :-(
 
-require_once APPLICATION_PATH . '/services/ApacheFactory.php';
-require_once APPLICATION_PATH . '/services/Apache.php';
 require_once APPLICATION_PATH . '/models/Host.php';
 require_once APPLICATION_PATH . '/models/SiteType.php';
 require_once APPLICATION_PATH . '/models/Site.php';
+require_once APPLICATION_PATH . '/services/Apache.php';
+require_once APPLICATION_PATH . '/services/ApacheFactory.php';
 
 use Application\Model;
 use Application\Service;
@@ -46,7 +46,9 @@ class ApacheTest extends \PHPUnit_Framework_TestCase
 			->with($this->equalTo($site->name));
 
 
-		$apacheFactory = $this->getMock('Application\Service\ApacheFactory');
+		$apacheFactory = $this->getMockBuilder('Application\Service\ApacheFactory')
+			->setConstructorArgs(array(null))
+			->getMock();
 		$apacheFactory
 			->expects($this->once())
 			->method('getConfigService')

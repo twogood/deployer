@@ -8,10 +8,7 @@ class Apache
 
 	public function __construct($factory = null)
 	{
-		if ($factory)
-			$this->factory = $factory;
-		else
-			$this->factory = new ApacheFactory();
+		$this->factory = $factory;
 	}	
 
 	public function deploy($site, $host)
@@ -25,13 +22,4 @@ class Apache
 		$controlService->uploadSiteConfig($site->name, $siteConfig, $host);
 		$controlService->enableSite($site->name, $host);
 	}
-
-
-	public function createConfig($site)
-	{
-		$siteConfig = 
-		$this->controlService->uploadSiteConfig($siteName, $siteConfig);
-		$this->controlService->enableSite($siteName);
-	}
-
 }

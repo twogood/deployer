@@ -21,7 +21,7 @@ class Repository
 			throw new \InvalidArgumentException("Could not read file: " . $filename);
 		}
 
-		$array = parse_ini_string($ini);
+		$array = @parse_ini_string($ini);
 		if ($array === false)
 		{
 			throw new \InvalidArgumentException(
