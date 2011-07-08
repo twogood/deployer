@@ -21,7 +21,9 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidHost()
 	{
-		$repository = $this->getMock('Application\Service\Repository');
+		$repository = $this->getMockBuilder('Application\Service\Repository')
+			->disableOriginalConstructor()
+			->getMock();
 		$repository
 			->expects($this->once())
 			->method('getHost')
@@ -43,7 +45,9 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidSite()
 	{
-		$repository = $this->getMock('Application\Service\Repository');
+		$repository = $this->getMockBuilder('Application\Service\Repository')
+			->disableOriginalConstructor()
+			->getMock();
 		$repository
 			->expects($this->once())
 			->method('getSite')
@@ -76,7 +80,9 @@ https://github.com/sebastianbergmann/phpunit/issues/269
 		$host = new Application\Model\Host();
 		$host->name = 'test-host';
 
-		$repository = $this->getMock('Application\Service\Repository');
+		$repository = $this->getMockBuilder('Application\Service\Repository')
+			->disableOriginalConstructor()
+			->getMock();
 		$repository
 			->expects($this->once())
 			->method('getHost')
