@@ -1,0 +1,4 @@
+Setup:
+
+ssh-keygen -t dsa -f tests/id_dsa
+
