@@ -66,12 +66,12 @@ EOF;
 
 		$repository = new services\Repository($repositoryPath);
 		$site = $repository->getSite('valid-site');
-		$this->assertType('models\Site', $site);
+		$this->assertInstanceOf('models\Site', $site);
 
 		$this->assertEquals('valid-site', $site->name);
 		$this->assertEquals('test1', $site->domainNames[0]);
 		$this->assertEquals('test2', $site->domainNames[1]);
-		$this->assertType('models\SiteType', $site->type);
+		$this->assertInstanceOf('models\SiteType', $site->type);
 		$this->assertEquals(models\SiteType::$DIRECTORY, $site->type);
 	}
 
@@ -92,9 +92,43 @@ EOF;
 
 		$repository = new services\Repository($repositoryPath);
 		$host = $repository->getHost('valid-host');
-		$this->assertType('models\Host', $host);
+		$this->assertInstanceOf('models\Host', $host);
 		$this->assertEquals('valid-host', $host->name);
 
+	}
+
+	public function testGetSites()
+	{
+		$expectedSites = array('site1', 'site2', 'site3', 'site4', 'site5');
+		$repositoryPath = vfsStream::url('root/testGetSites');
+
+		$sitesPath = $repositoryPath . '/sites/';
+		$this->assertTrue(mkdir($sitesPath, 0777, true));
+		foreach ($expectedSites as $name)
+		{
+			file_put_contents($sitesPath . '/' . $name, '');
+		}
+
+		$repository = new services\Repository($repositoryPath);
+		$sites = $repository->getSiteNames();
+		$this->assertInternalType('array', $sites);
+		$this->assertEquals($expectedSites, $sites);
+	}
+
+	public function testGetHosts()
+	{
+		$expectedHosts = array('host1', 'host2', 'host3');
+		$repositoryPath = vfsStream::url('root');
+		$hostsPath = $repositoryPath . '/hosts/';
+		$this->assertTrue(mkdir($hostsPath, 0777, true));
+		foreach ($expectedHosts as $name)
+		{
+			mkdir($hostsPath. '/' . $name);
+		}
+
+		$repository = new services\Repository($repositoryPath);
+		$hosts = $repository->getHostNames();
+		$this->assertEquals($expectedHosts, $hosts);
 	}
 
 

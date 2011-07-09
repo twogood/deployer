@@ -4,15 +4,13 @@ namespace services;
 class Deploy
 {
 	private $repository;
-	private $apacheService;
-	private $secureShellService;
+	private $deployFactory;
 	
 	public function __construct($repository, $deployFactory)
 	{
 		$this->repository = $repository;
 		$this->deployFactory = $deployFactory;
 	}
-
 
 	public function deploy($siteName, $hostName)
 	{
@@ -22,6 +20,4 @@ class Deploy
 		$deployer = $this->deployFactory->getDeployer($site->type);
 		$deployer->deploy($site, $host);
 	}
-
-
 }

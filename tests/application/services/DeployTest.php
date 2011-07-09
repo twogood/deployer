@@ -2,7 +2,6 @@
 
 class DeployTest extends \PHPUnit_Framework_TestCase
 {
-
 	/**
 	 * @expectedException InvalidArgumentException
 	 */

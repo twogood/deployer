@@ -70,4 +70,21 @@ class Repository
 		return $result;
 	}
 
+	private function listDirectory($subDirectory)
+	{
+		$result = scandir($this->repositoryPath . '/' . $subDirectory);
+
+		return array_diff($result, array('.', '..'));
+	}
+
+	public function getSiteNames()
+	{
+		return self::listDirectory('sites');
+	}
+
+	public function getHostNames()
+	{
+		return self::listDirectory('hosts');
+	}
+
 }

@@ -29,6 +29,7 @@ function simpleAutoloader($className)
 	else
 		throw new Exception("File not found: ".$fullPath);
 }
+$loader->pushAutoloader('simpleAutoloader', 'forms'); 
 $loader->pushAutoloader('simpleAutoloader', 'models'); 
 $loader->pushAutoloader('simpleAutoloader', 'services'); 
 

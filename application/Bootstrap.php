@@ -2,11 +2,6 @@
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
-	protected function _initConfig()
-	{
-		Zend_Registry::set('config', $this->getOptions());
-	}
-
 	// @codeCoverageIgnoreStart
 	public static function simpleAutoloader($className)
 	{
@@ -19,10 +14,17 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
 	protected function _initAutoload() {
 		$loader = Zend_Loader_Autoloader::getInstance();
+		$loader->pushAutoloader(array('Bootstrap', 'simpleAutoloader'), 'forms'); 
 		$loader->pushAutoloader(array('Bootstrap', 'simpleAutoloader'), 'models'); 
 		$loader->pushAutoloader(array('Bootstrap', 'simpleAutoloader'), 'services'); 
 
 	}	
+
+	protected function _initServiceFactory()
+	{
+	    Zend_Registry::set('serviceFactory', 
+		new \services\ServiceFactory($this->getOptions()));
+	}
 
 }
 

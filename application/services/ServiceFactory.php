@@ -5,6 +5,7 @@ namespace services;
 class ServiceFactory
 {
 	private $config;
+	private $repository;
 
 	public function __construct($config)
 	{
@@ -12,20 +13,27 @@ class ServiceFactory
 	}
 
 
-    public function createDeployService()
-    {
-	$repositoryConfig = $this->config['repository'];
-	
-	$repositoryPath = $repositoryConfig['path'];
-	$repository = new Repository($repositoryPath);
+	public function getRepository()
+	{
+		if (!$this->repository)
+		{
+			$repositoryConfig = $this->config['repository'];
+			$repositoryPath = $repositoryConfig['path'];
+			$this->repository = new Repository($repositoryPath);
+		}
 
+		return $this->repository;
+	}
+
+    public function getDeployService()
+    {
 	$secureShellService = new SecureShell();
 
 	$apacheFactory = new ApacheFactory($secureShellService);
 	$apacheService = new Apache($apacheFactory);
 
 	$deployFactory = new DeployFactory($apacheService, $secureShellService);
-	$deployService = new Deploy($repository, $deployFactory);
+	$deployService = new Deploy($this->getRepository(), $deployFactory);
 
 	return $deployService;
     }
