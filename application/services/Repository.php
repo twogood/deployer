@@ -1,7 +1,5 @@
 <?php
-namespace Application\Service;
-
-use Application\Model;
+namespace services;
 
 class Repository
 {
@@ -12,9 +10,9 @@ class Repository
 		$this->repositoryPath = $repositoryPath;
 	}
 
-	protected function readIniFile($directory, $name)
+	protected function readIniFile($pathComponents)
 	{
-		$filename = $this->repositoryPath . '/'. $directory. '/' . $name;
+		$filename = $this->repositoryPath . '/' . implode('/', $pathComponents);
 		$ini = @file_get_contents($filename);
 		if ($ini === false)
 		{
@@ -32,9 +30,9 @@ class Repository
 
 	public function getSite($siteName)
 	{
-		$array = $this->readIniFile('sites', $siteName);
+		$array = $this->readIniFile(array('sites', $siteName));
 
-		$result = new Model\Site($siteName);
+		$result = new \models\Site($siteName);
 		foreach ($array as $key => $value)
 		{
 			switch ($key)
@@ -42,7 +40,7 @@ class Repository
 				case 'name':	// ignore
 					break;
 				case 'type':
-					$result->$key = new Model\SiteType($value);
+					$result->$key = new \models\SiteType($value);
 					break;
 				default:
 					$result->$key = $value;
@@ -55,7 +53,21 @@ class Repository
 
 	public function getHost($hostName)
 	{
-		throw new \InvalidArgumentException();
+		$array = $this->readIniFile(array('hosts', $hostName, 'config'));
+		$result = new \models\Host($hostName);
+		foreach ($array as $key => $value)
+		{
+			switch ($key)
+			{
+				case 'name':	// ignore
+					break;
+				default:
+					$result->$key = $value;
+					break;
+			}
+		}
+
+		return $result;
 	}
 
 }

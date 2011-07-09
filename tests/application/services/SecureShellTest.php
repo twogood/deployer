@@ -1,13 +1,5 @@
 <?php
 
-// XXX: can't get autoloading to work :-(
-
-require_once APPLICATION_PATH . '/models/Host.php';
-require_once APPLICATION_PATH . '/services/SecureShell.php';
-
-use Application\Model;
-use Application\Service;
-
 class SecureShellTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
@@ -34,10 +26,9 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testRunCommandInvalidHost()
 	{
-		$host = new Model\Host();
-		$host->name = 'invalid-host';
+		$host = new models\Host('invalid-host');
 		
-		$secureShellService = new Service\SecureShell();
+		$secureShellService = new services\SecureShell();
 		$secureShellService->runCommand($host, "whoami");	
 	}
 
@@ -46,11 +37,10 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testRunCommandLocalhostInvalidFingerprint()
 	{
-		$host = new Model\Host();
-		$host->name = 'localhost';
+		$host = new models\Host('localhost');
 		$host->fingerprint = 'invalid';
 		
-		$secureShellService = new Service\SecureShell();
+		$secureShellService = new services\SecureShell();
 		$secureShellService->runCommand($host, "whoami");	
 	}
 
@@ -64,8 +54,7 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 
 	private function createHost()
 	{
-		$host = new Model\Host();
-		$host->name = 'localhost';
+		$host = new models\Host('localhost');
 		$host->fingerprint = 'invalid';
 		$host->ssh_username = exec('whoami');
 		$host->ssh_pubkeyfile = getcwd().'/id_dsa.pub';
@@ -86,7 +75,7 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 		$host = $this->createHost();
 		$this->allowPublicKey($host->ssh_pubkeyfile);
 		
-		$secureShellService = new Service\SecureShell();
+		$secureShellService = new services\SecureShell();
 		$result = $secureShellService->runCommand($host, "/usr/bin/whoami && echo hepp");
 		$this->assertEquals($host->ssh_username . "\nhepp", $result);
 	}
@@ -100,7 +89,7 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 		chmod($fileName, 0666);
 		$expectedFileData = "whatever" . mt_srand();
 		
-		$secureShellService = new Service\SecureShell();
+		$secureShellService = new services\SecureShell();
 		$secureShellService->uploadFileData($host, $fileName, $expectedFileData);
 
 		$actualFileData = file_get_contents($fileName);

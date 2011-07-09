@@ -2,10 +2,8 @@
 
 class DeployController extends Zend_Controller_Action
 {
-
     public function init()
     {
-        /* Initialize action controller here */
     }
 
     public function indexAction()
@@ -15,7 +13,14 @@ class DeployController extends Zend_Controller_Action
 
     public function deployAction()
     {
-        // action body
+	$siteName = $this->_getParam('site');
+	$hostName = $this->_getParam('host');
+
+	$serviceFactory = Zend_Registry::get('serviceFactory');
+	$deployService = $serviceFactory->createDeployService();
+
+	$deployService->deploy($siteName, $hostName);
+
     }
 
 

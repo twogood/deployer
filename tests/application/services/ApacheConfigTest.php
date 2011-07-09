@@ -1,11 +1,5 @@
 <?php
 
-// XXX: can't get autoloading to work :-(
-
-require_once APPLICATION_PATH . '/services/ApacheConfigDirectory.php';
-
-use Application\Service;
-
 class ApacheConfigTest extends PHPUnit_Framework_TestCase
 {
     private static function trimAllLines($str)
@@ -16,7 +10,7 @@ class ApacheConfigTest extends PHPUnit_Framework_TestCase
 	
     public function testCreateConfigWithoutAlias()
     {
-	$apacheConfigService = new Service\ApacheConfigDirectory();
+	$apacheConfigService = new services\ApacheConfigDirectory();
 
 	$actual = $apacheConfigService->createConfig('test', array('test1'));
 	$this->assertNotNull($actual);
@@ -44,7 +38,7 @@ EOF;
 
     public function testCreateConfigWithAlias()
     {
-	$apacheConfigService = new Service\ApacheConfigDirectory();
+	$apacheConfigService = new services\ApacheConfigDirectory();
 
 	$actual = $apacheConfigService->createConfig('test', array('test1', 'test2'));
 	$this->assertNotNull($actual);
@@ -72,7 +66,7 @@ EOF;
 
     public function testCreateConfigWithExtraConfig()
     {
-	$apacheConfigService = new Service\ApacheConfigDirectory();
+	$apacheConfigService = new services\ApacheConfigDirectory();
 
 	$actual = $apacheConfigService->createConfig('test', array('test1', 'test2'), 
 		'Include /etc/phpmyadmin/apache.conf');

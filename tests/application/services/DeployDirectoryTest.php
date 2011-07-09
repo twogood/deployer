@@ -1,31 +1,17 @@
 <?php
 
-
-// XXX: can't get autoloading to work :-(
-
-require_once APPLICATION_PATH . '/services/SecureShell.php';
-require_once APPLICATION_PATH . '/services/DeployDirectory.php';
-require_once APPLICATION_PATH . '/models/Host.php';
-require_once APPLICATION_PATH . '/models/SiteType.php';
-require_once APPLICATION_PATH . '/models/Site.php';
-
-use Application\Model;
-use Application\Service;
-
 class DeployDirectoryTest extends PHPUnit_Framework_TestCase
 {
 
 	public function testDeployDirectory()
 	{
-		$site = new Model\Site();
-		$site->name = 'test-site';
-		$site->type = Model\SiteType::$DIRECTORY;
+		$site = new models\Site('test-site');
+		$site->type = models\SiteType::$DIRECTORY;
 		$site->master = 'ssh://user@host/dir';
 
-		$host = new Model\Host();
-		$host->name = 'test-host';
+		$host = new models\Host('test-host');
 
-		$apacheService = $this->getMockBuilder('Application\Service\Apache')
+		$apacheService = $this->getMockBuilder('services\Apache')
 			->disableOriginalConstructor()
 			->getMock();
 		$apacheService
@@ -34,7 +20,7 @@ class DeployDirectoryTest extends PHPUnit_Framework_TestCase
 			->with($this->equalTo($site), $this->equalTo($host))
 			;
 
-		$secureShellService = $this->getMock('Application\Service\SecureShell');
+		$secureShellService = $this->getMock('services\SecureShell');
 		$secureShellService
 			->expects($this->once())
 			->method('runCommand')
@@ -43,7 +29,7 @@ class DeployDirectoryTest extends PHPUnit_Framework_TestCase
 				)
 			;
 
-		$deployService = new Service\DeployDirectory($apacheService, $secureShellService);
+		$deployService = new services\DeployDirectory($apacheService, $secureShellService);
 		$deployService->deploy($site, $host);
 	}
 

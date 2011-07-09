@@ -1,5 +1,5 @@
 <?php
-namespace Application\Service;
+namespace services;
 
 use Application\Model;
 
@@ -12,7 +12,7 @@ class ApacheFactory
 		$this->secureShellService = $secureShellService;
 	}
 
-	public function getConfigService(Model\SiteType $siteType)
+	public function getConfigService(\models\SiteType $siteType)
 	{
 		return new ApacheConfigDirectory();
 	}

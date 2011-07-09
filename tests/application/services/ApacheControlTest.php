@@ -1,24 +1,15 @@
 <?php
 
-// XXX: can't get autoloading to work :-(
-
-require_once APPLICATION_PATH . '/services/ApacheControl.php';
-require_once APPLICATION_PATH . '/models/Host.php';
-
-use Application\Model;
-use Application\Service;
-
 class ApacheControlTest extends PHPUnit_Framework_TestCase
 {
 
 	public function testUploadConfiguration()
 	{
-		$host = new Model\Host();
-		$host->name = 'test-host';
+		$host = new models\Host('test-host');
 
 		$siteConfig = "testtesttest";
 
-		$secureShellService = $this->getMock('Application\Service\SecureShell');
+		$secureShellService = $this->getMock('services\SecureShell');
 		$secureShellService
 			->expects($this->once())
 			->method('uploadFileData')
@@ -28,16 +19,15 @@ class ApacheControlTest extends PHPUnit_Framework_TestCase
 				)
 			;
 		
-		$apacheControlService = new Service\ApacheControl($secureShellService);
+		$apacheControlService = new services\ApacheControl($secureShellService);
 		$apacheControlService->uploadSiteConfig("test", $siteConfig, $host);
 	}
 
 	public function testEnableSite()
 	{
-		$host = new Model\Host();
-		$host->name = 'test-host';
+		$host = new models\Host('test-host');
 
-		$secureShellService = $this->getMock('Application\Service\SecureShell');
+		$secureShellService = $this->getMock('services\SecureShell');
 		$secureShellService
 			->expects($this->once())
 			->method('runCommand')
@@ -46,7 +36,7 @@ class ApacheControlTest extends PHPUnit_Framework_TestCase
 				)
 			;
 
-		$apacheControlService = new Service\ApacheControl($secureShellService);
+		$apacheControlService = new services\ApacheControl($secureShellService);
 		$apacheControlService->enableSite('test-site', $host);
 	}
 }

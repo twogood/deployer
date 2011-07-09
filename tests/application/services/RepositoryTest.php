@@ -2,16 +2,6 @@
 
 require_once 'vfsStream/vfsStream.php';
 
-// XXX: can't get autoloading to work :-(
-
-require_once APPLICATION_PATH . '/services/Repository.php';
-require_once APPLICATION_PATH . '/models/Host.php';
-require_once APPLICATION_PATH . '/models/Site.php';
-require_once APPLICATION_PATH . '/models/SiteType.php';
-
-use Application\Model;
-use Application\Service;
-
 class RepositoryTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
@@ -25,7 +15,7 @@ class RepositoryTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidHost()
 	{
-		$repository = new Service\Repository(vfsStream::url('/invalid-path'));
+		$repository = new services\Repository(vfsStream::url('/invalid-path'));
 		$repository->getHost('invalid-host');
 	}
 
@@ -34,7 +24,7 @@ class RepositoryTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidSite()
 	{
-		$repository = new Service\Repository(vfsStream::url('/invalid-path'));
+		$repository = new services\Repository(vfsStream::url('/invalid-path'));
 		$repository->getSite('invalid-site');
 	}
 
@@ -53,7 +43,7 @@ class RepositoryTest extends PHPUnit_Framework_TestCase
 		$result = file_put_contents($siteFilePath, $iniData);
 		$this->assertNotEquals(false, $result);
 
-		$repository = new Service\Repository($repositoryPath);
+		$repository = new services\Repository($repositoryPath);
 		$repository->getSite('valid-site');
 	}
 
@@ -74,15 +64,39 @@ EOF;
 		$result = file_put_contents($siteFilePath, $iniData);
 		$this->assertNotEquals(false, $result);
 
-		$repository = new Service\Repository($repositoryPath);
+		$repository = new services\Repository($repositoryPath);
 		$site = $repository->getSite('valid-site');
-		$this->assertType('Application\Model\Site', $site);
+		$this->assertType('models\Site', $site);
 
 		$this->assertEquals('valid-site', $site->name);
 		$this->assertEquals('test1', $site->domainNames[0]);
 		$this->assertEquals('test2', $site->domainNames[1]);
-		$this->assertType('Application\Model\SiteType', $site->type);
-		$this->assertEquals(Model\SiteType::$DIRECTORY, $site->type);
+		$this->assertType('models\SiteType', $site->type);
+		$this->assertEquals(models\SiteType::$DIRECTORY, $site->type);
 	}
+
+
+	public function testValidHost()
+	{
+		$repositoryPath = vfsStream::url('root');
+		$hostDir = $repositoryPath . '/hosts/valid-host';
+		$this->assertTrue(mkdir($hostDir, 0777, true));
+		$iniData = <<<EOF
+name = ignore-me
+key = value
+EOF;
+
+		$hostFilePath = $hostDir . '/config';
+		$result = file_put_contents($hostFilePath, $iniData);
+		$this->assertNotEquals(false, $result);
+
+		$repository = new services\Repository($repositoryPath);
+		$host = $repository->getHost('valid-host');
+		$this->assertType('models\Host', $host);
+		$this->assertEquals('valid-host', $host->name);
+
+	}
+
+
 }
 

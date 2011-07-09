@@ -1,18 +1,5 @@
 <?php
 
-// XXX: can't get autoloading to work :-(
-
-require_once APPLICATION_PATH . '/services/DeployDirectory.php';
-require_once APPLICATION_PATH . '/services/Repository.php';
-require_once APPLICATION_PATH . '/services/Deploy.php';
-require_once APPLICATION_PATH . '/services/DeployFactory.php';
-require_once APPLICATION_PATH . '/models/Host.php';
-require_once APPLICATION_PATH . '/models/SiteType.php';
-require_once APPLICATION_PATH . '/models/Site.php';
-
-use Application\Model;
-use Application\Service;
-
 class DeployTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -21,7 +8,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidHost()
 	{
-		$repository = $this->getMockBuilder('Application\Service\Repository')
+		$repository = $this->getMockBuilder('services\Repository')
 			->disableOriginalConstructor()
 			->getMock();
 		$repository
@@ -34,9 +21,9 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 			->expects($this->any())
 			->method('getSite')
 			->with($this->equalTo('test-site'))
-			->will($this->returnValue(new Model\Site()));
+			->will($this->returnValue(new models\Site('test-site')));
 
-		$deployService = new Service\Deploy($repository, null);
+		$deployService = new services\Deploy($repository, null);
 		$deployService->deploy('test-site', 'invalid-host');
 	}
 
@@ -45,7 +32,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidSite()
 	{
-		$repository = $this->getMockBuilder('Application\Service\Repository')
+		$repository = $this->getMockBuilder('services\Repository')
 			->disableOriginalConstructor()
 			->getMock();
 		$repository
@@ -65,22 +52,20 @@ https://github.com/sebastianbergmann/phpunit/issues/269
 			->expects($this->any())
 			->method('getHost')
 //			->with($this->equalTo('test-host'))
-			->will($this->returnValue(new Model\Host()));
+			->will($this->returnValue(new models\Host('test-host')));
 
-		$deployService = new Service\Deploy($repository, null);
+		$deployService = new services\Deploy($repository, null);
 		$deployService->deploy('invalid-site', 'test-host');
 	}
 
 	public function testDeploy()
 	{
-		$site = new Application\Model\Site();
-		$site->name = 'test-site';
-		$site->type = Application\Model\SiteType::$DIRECTORY;
+		$site = new models\Site('test-site');
+		$site->type = models\SiteType::$DIRECTORY;
 
-		$host = new Application\Model\Host();
-		$host->name = 'test-host';
+		$host = new models\Host('test-host');
 
-		$repository = $this->getMockBuilder('Application\Service\Repository')
+		$repository = $this->getMockBuilder('services\Repository')
 			->disableOriginalConstructor()
 			->getMock();
 		$repository
@@ -95,7 +80,7 @@ https://github.com/sebastianbergmann/phpunit/issues/269
 			->with($this->equalTo('test-site'))
 			->will($this->returnValue($site));
 
-		$deployDirectory = $this->getMockBuilder('Application\Service\DeployDirectory')
+		$deployDirectory = $this->getMockBuilder('services\DeployDirectory')
 			->disableOriginalConstructor()
 			->getMock();
 		$deployDirectory
@@ -103,7 +88,7 @@ https://github.com/sebastianbergmann/phpunit/issues/269
 			->method('deploy')
 			->with($this->equalTo($site), $this->equalTo($host));
 
-		$deployFactory = $this->getMockBuilder('Application\Service\DeployFactory')
+		$deployFactory = $this->getMockBuilder('services\DeployFactory')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -113,7 +98,7 @@ https://github.com/sebastianbergmann/phpunit/issues/269
 			->with($this->equalTo($site->type))
 			->will($this->returnValue($deployDirectory));
 
-		$deployService = new Service\Deploy($repository, $deployFactory);
+		$deployService = new services\Deploy($repository, $deployFactory);
 		$deployService->deploy('test-site', 'test-host');
 	}
 

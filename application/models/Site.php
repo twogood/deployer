@@ -1,5 +1,5 @@
 <?php
-namespace Application\Model;
+namespace models;
 
 class Site
 {
@@ -9,7 +9,7 @@ class Site
 	public $extraVirtualHostConfig;
 	public $master;
 
-	public function __construct($name = null)
+	public function __construct($name)
 	{
 		$this->name = $name;
 	}

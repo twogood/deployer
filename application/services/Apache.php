@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Service;
+namespace services;
 
 class Apache
 {

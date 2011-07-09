@@ -16,14 +16,19 @@ set_include_path(implode(PATH_SEPARATOR, array(
 
 require_once 'Zend/Loader/Autoloader.php';
 
-/*
-$autoloader = new Zend_Application_Module_Autoloader(array(
-			'namespace' => 'Application_',
-			'basePath'  => dirname(__FILE__),
-			));
-*/
-//$loader->registerNamespace('Application_');
 $loader = Zend_Loader_Autoloader::getInstance();
-$loader->setFallbackAutoloader(true);
 $loader->suppressNotFoundWarnings(false);
+
+function simpleAutoloader($className)
+{
+	$fullPath = APPLICATION_PATH . '/' . str_replace('\\', '/', $className) . '.php';
+	//echo "[$fullPath]\n";
+	if (file_exists($fullPath)) {
+		include_once($fullPath);
+	}
+	else
+		throw new Exception("File not found: ".$fullPath);
+}
+$loader->pushAutoloader('simpleAutoloader', 'models'); 
+$loader->pushAutoloader('simpleAutoloader', 'services'); 
 

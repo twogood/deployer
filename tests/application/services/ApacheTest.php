@@ -1,29 +1,16 @@
 <?php
 
-// XXX: can't get autoloading to work :-(
-
-require_once APPLICATION_PATH . '/models/Host.php';
-require_once APPLICATION_PATH . '/models/SiteType.php';
-require_once APPLICATION_PATH . '/models/Site.php';
-require_once APPLICATION_PATH . '/services/Apache.php';
-require_once APPLICATION_PATH . '/services/ApacheFactory.php';
-
-use Application\Model;
-use Application\Service;
-
 class ApacheTest extends \PHPUnit_Framework_TestCase
 {
 
 	public function testDirectoryConfig()
 	{
-		$site = new Model\Site();
-		$site->name = 'test-site';
-		$site->type = Model\SiteType::$DIRECTORY;
+		$site = new models\Site('test-site');
+		$site->type = models\SiteType::$DIRECTORY;
 
-		$host = new Model\Host();
-		$host->name = 'test-host';
+		$host = new models\Host('test-host');
 
-		$apacheConfigService = $this->getMock('Application\Service\ApacheConfigDirectory');
+		$apacheConfigService = $this->getMock('services\ApacheConfigDirectory');
 		$apacheConfigService
 			->expects($this->any())
 			->method('createConfig')
@@ -31,7 +18,7 @@ class ApacheTest extends \PHPUnit_Framework_TestCase
 			->will($this->returnValue('mock-config'));
 
 		$apacheControlService = $this
-			->getMockBuilder('Application\Service\ApacheControl')
+			->getMockBuilder('services\ApacheControl')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -46,7 +33,7 @@ class ApacheTest extends \PHPUnit_Framework_TestCase
 			->with($this->equalTo($site->name));
 
 
-		$apacheFactory = $this->getMockBuilder('Application\Service\ApacheFactory')
+		$apacheFactory = $this->getMockBuilder('services\ApacheFactory')
 			->setConstructorArgs(array(null))
 			->getMock();
 		$apacheFactory
@@ -62,7 +49,7 @@ class ApacheTest extends \PHPUnit_Framework_TestCase
 			->will($this->returnValue($apacheControlService))
 			;
 
-		$apacheService = new Service\Apache($apacheFactory);
+		$apacheService = new services\Apache($apacheFactory);
 		$apacheService->deploy($site, $host);
 	}
 
