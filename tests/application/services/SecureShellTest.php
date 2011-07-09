@@ -38,7 +38,7 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 	public function testRunCommandLocalhostInvalidFingerprint()
 	{
 		$host = new models\Host('localhost');
-		$host->fingerprint = 'invalid';
+		$host->ssh_fingerprint = 'invalid';
 		
 		$secureShellService = new services\SecureShell();
 		$secureShellService->runCommand($host, "whoami");	
@@ -55,7 +55,7 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 	private function createHost()
 	{
 		$host = new models\Host('localhost');
-		$host->fingerprint = 'invalid';
+		$host->ssh_fingerprint = 'invalid';
 		$host->ssh_username = exec('whoami');
 		$host->ssh_pubkeyfile = getcwd().'/id_dsa.pub';
 		$host->ssh_privkeyfile = getcwd().'/id_dsa';
@@ -64,7 +64,7 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(file_exists($host->ssh_privkeyfile));
 
 		$ssh = ssh2_connect($host->name);
-		$host->fingerprint = ssh2_fingerprint($ssh);
+		$host->ssh_fingerprint = ssh2_fingerprint($ssh);
 		unset($ssh);
 
 		return $host;
