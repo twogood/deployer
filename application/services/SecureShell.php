@@ -9,7 +9,7 @@ class SecureShell
 		if ($ssh === false)
 			throw new \InvalidArgumentException("Could not connect to host: ".$host->name);
 		$fingerprint = ssh2_fingerprint($ssh);
-		if ($host->fingerprint != $fingerprint)
+		if ($host->ssh_fingerprint != $fingerprint)
 			throw new \Exception("Fingerprint mismatch, received " . $fingerprint);
 
 		$success = ssh2_auth_pubkey_file($ssh, 
@@ -53,6 +53,6 @@ echo "Error: [" . ."]";
 		$success = ssh2_scp_send($ssh, $localFile, $remoteFile);
 		unset($ssh);
 		if ($success == false)
-			throw new Exception("Failed to send file");
+			throw new \Exception("Failed to send $localFile to $remoteFile");
 	}
 }
