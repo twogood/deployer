@@ -33,7 +33,8 @@ class ApacheControlTest extends PHPUnit_Framework_TestCase
 			->method('runCommand')
 			->with($this->equalTo($host), 
 				$this->matchesRegularExpression('/a2ensite test.*apache2 reload/')
-				)
+      )
+      ->will($this->returnValue(array('DEPLOY-SUCCESS', '')))
 			;
 
 		$apacheControlService = new services\ApacheControl($secureShellService);

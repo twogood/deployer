@@ -52,11 +52,11 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 			FILE_APPEND);
 	}
 
-	private function createHost()
+	private function createHost($sshUsername)
 	{
 		$host = new models\Host('localhost');
 		$host->ssh_fingerprint = 'invalid';
-		$host->ssh_username = exec('whoami');
+		$host->ssh_username = $sshUsername;
 		$host->ssh_pubkeyfile = getcwd().'/id_dsa.pub';
 		$host->ssh_privkeyfile = getcwd().'/id_dsa';
 
@@ -68,21 +68,34 @@ class SecureShellTest extends PHPUnit_Framework_TestCase
 		unset($ssh);
 
 		return $host;
+  }
+
+	/**
+   * @expectedException Exception
+   * @expectedExceptionMessage Authentication failed for deploy using public key
+	 */
+  public function testDefaultUsername()
+  {
+ 		$host = $this->createHost(null);
+		
+		$secureShellService = new services\SecureShell();
+    $result = $secureShellService->runCommand($host, "pwd");
+    $this->fail("Not supposed to get result '$result'");
 	}
 
 	public function testRunCommandLocalhost()
 	{
-		$host = $this->createHost();
+		$host = $this->createHost(exec('whoami'));
 		$this->allowPublicKey($host->ssh_pubkeyfile);
 		
 		$secureShellService = new services\SecureShell();
-		$result = $secureShellService->runCommand($host, "/usr/bin/whoami && echo hepp");
+		list($result, $error) = $secureShellService->runCommand($host, "/usr/bin/whoami && (echo error message >&2) && echo hepp");
 		$this->assertEquals($host->ssh_username . "\nhepp", $result);
 	}
 
 	public function testUploadFileData()
 	{
-		$host = $this->createHost();
+		$host = $this->createHost(exec('whoami'));
 		$this->allowPublicKey($host->ssh_pubkeyfile);
 
 		$fileName = tempnam('/tmp', 'SecureShellTest');

@@ -25,8 +25,9 @@ class DeployDirectoryTest extends PHPUnit_Framework_TestCase
 			->expects($this->once())
 			->method('runCommand')
 			->with($this->equalTo($host), 
-				$this->equalTo("git clone 'ssh://user@host/dir' '/var/www/test-site'")
+				$this->equalTo("git clone -q 'ssh://user@host/dir' '/var/www/test-site' && echo DEPLOY-SUCCESS || echo DEPLOY-FAILURE")
 				)
+      ->will($this->returnValue(array('DEPLOY-SUCCESS', '')))
 			;
 
 		$deployService = new services\DeployDirectory($apacheService, $secureShellService);

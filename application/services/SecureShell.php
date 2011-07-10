@@ -3,56 +3,72 @@ namespace services;
 
 class SecureShell
 {
-	public function login($host)
-	{
-		$ssh = @ssh2_connect($host->name);
-		if ($ssh === false)
-			throw new \InvalidArgumentException("Could not connect to host: ".$host->name);
-		$fingerprint = ssh2_fingerprint($ssh);
-		if ($host->ssh_fingerprint != $fingerprint)
-			throw new \Exception("Fingerprint mismatch, received " . $fingerprint);
+  private static function getUsername($host)
+  {
+    if (!isset($host->ssh_username))
+      return 'deploy';
+    else
+      return $host->ssh_username;
+  }
 
-		$success = ssh2_auth_pubkey_file($ssh, 
-			$host->ssh_username, 
-			$host->ssh_pubkeyfile, 
-			$host->ssh_privkeyfile);
+  public function login($host)
+  {
+    $ssh = @ssh2_connect($host->name);
+    if ($ssh === false)
+      throw new \InvalidArgumentException("Could not connect to host: ".$host->name);
+    $fingerprint = ssh2_fingerprint($ssh);
+    if ($host->ssh_fingerprint != $fingerprint)
+      throw new \Exception("Fingerprint mismatch, received " . $fingerprint);
 
-		if ($success !== true)
-			throw new \Exception("Key authentication failed");
+    $success = @ssh2_auth_pubkey_file($ssh, 
+      self::getUsername($host), 
+      $host->ssh_pubkeyfile, 
+      $host->ssh_privkeyfile);
 
-		return $ssh;
-	}
+    if ($success !== true)
+    {
+      throw new \models\LastErrorException();
+    }
 
-	public function runCommand($host, $command)
-	{
-		$ssh = $this->login($host);
-		
-		$stream = ssh2_exec($ssh, $command);
-		stream_set_blocking($stream, true);
+    return $ssh;
+  }
 
-		$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-		stream_set_blocking($errorStream, true);
+  public function runCommand($host, $command)
+  {
+    $ssh = $this->login($host);
 
-		$output = stream_get_contents($stream);
-		$error = stream_get_contents($errorStream);
+    $stream = ssh2_exec($ssh, $command);
+    stream_set_blocking($stream, true);
+
+    $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+    stream_set_blocking($errorStream, true);
+
+    $output = stream_get_contents($stream);
+    $error = stream_get_contents($errorStream);
 /*
 echo "Output: [" . ."]";
 echo "Error: [" . ."]";
-*/
-		unset($ssh);
-		return trim($output);
-	}
+ */
+    unset($ssh);
 
-	public function uploadFileData($host, $remoteFile, $fileData)
-	{
-		$localFile = tempnam('/tmp', 'uploadFileData');
-		//echo "\n[$localFile]\n";
-		file_put_contents($localFile, $fileData);
+    $stderr = fopen("php://stderr", 'w');
+    fwrite($stderr, "runCommand('".$host->name."', '$command') output:\n$output\n");
+    fwrite($stderr, "runCommand('".$host->name."', '$command') error:\n$error\n");
+    fclose($stderr);
 
-		$ssh = $this->login($host);
-		$success = ssh2_scp_send($ssh, $localFile, $remoteFile);
-		unset($ssh);
-		if ($success == false)
-			throw new \Exception("Failed to send $localFile to $remoteFile");
-	}
+    return array(trim($output), trim($error));
+  }
+
+  public function uploadFileData($host, $remoteFile, $fileData)
+  {
+    $localFile = tempnam('/tmp', 'uploadFileData');
+    //echo "\n[$localFile]\n";
+    file_put_contents($localFile, $fileData);
+
+    $ssh = $this->login($host);
+    $success = ssh2_scp_send($ssh, $localFile, $remoteFile);
+    unset($ssh);
+    if ($success == false)
+      throw new \Exception("Failed to send $localFile to $remoteFile");
+  }
 }

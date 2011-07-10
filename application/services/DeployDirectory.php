@@ -20,7 +20,9 @@ class DeployDirectory
 
 		$master = $site->master;
 		$siteDirectory = $site->getDirectory();
-		$this->secureShellService->runCommand($host, "git clone '$master' '$siteDirectory'");
+    list($output, $error) = $this->secureShellService->runCommand($host, "git clone -q '$master' '$siteDirectory' && echo DEPLOY-SUCCESS || echo DEPLOY-FAILURE");
+    if ($output != 'DEPLOY-SUCCESS')
+        throw new \Exception('git clone failed: '.$error);
 	}
 
 
