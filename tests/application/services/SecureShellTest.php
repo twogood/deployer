@@ -3,7 +3,13 @@
 class SecureShellTest extends PHPUnit_Framework_TestCase
 {
 	public function setUp()
-	{
+  {
+    if (getenv('FAST_TESTS'))
+    {
+      $this->markTestSkipped("SecureShellTest is a bit slow");
+      return;
+    }
+
 		$home = getenv('HOME');
 		$this->authorized_keys = $home . '/.ssh/authorized_keys';
 		$this->authorized_keys_backup = $home . '/.ssh/authorized_keys.SecureShellTest';

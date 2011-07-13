@@ -2,28 +2,16 @@
 
 class LoopiaXmlTest extends PHPUnit_Framework_TestCase
 {
-
-  /**
-   * @expectedException Exception
-   */
-  public function testInvalidMethod()
-  {
-    $loopiaXml = new services\LoopiaXml();
-    $loopiaXml->thisRequestDoesNotExist(42);
-  }
-
   public function testGetZoneRecords()
   {
-    
-
-    $loopiaXml = new services\LoopiaXml();
+    $encoder = new services\loopia\Encoder();
 
     $username = 'user';
     $password = 'pass';
     $customer_number = '';
     $domain = 'sanktanna.nu';
     $subdomain = '@';
-    $actualXml = $loopiaXml->getZoneRecords(
+    $actualXml = $encoder->getZoneRecords(
       $username, $password, $customer_number, $domain, $subdomain);
 
     $expectedXml = <<<EOF
@@ -33,7 +21,7 @@ class LoopiaXmlTest extends PHPUnit_Framework_TestCase
   <params>
     <param><value><string>$username</string></value></param>
     <param><value><string>$password</string></value></param>
-    <param><value><string></string></value></param>
+    <param><value><string>$customer_number</string></value></param>
     <param><value><string>$domain</string></value></param>
     <param><value><string>$subdomain</string></value></param>
   </params>

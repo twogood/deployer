@@ -2,3 +2,13 @@ Setup:
 
 ssh-keygen -t dsa -f tests/id_dsa
 
+
+
+Environment variables used by tests:
+
+FAST_TESTS - set this to skip slow tests
+
+LOOPIA_USERNAME
+LOOPIA_PASSWORD - set these to test HTTP request to https://api.loopia.se/RPCSERV
+
+
