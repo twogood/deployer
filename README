@@ -17,7 +17,7 @@ sudo pear install pat/vfsStream-beta
 
 Setup in deployer project:
 
-cd library && ln -s /usr/share/php/libzend-framework-php/Zend
+(cd library && ln -s /usr/share/php/libzend-framework-php/Zend)
 ssh-keygen -t dsa -f tests/id_dsa
 
 
