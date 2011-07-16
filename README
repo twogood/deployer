@@ -1,5 +1,23 @@
-Setup:
+Prerequisites:
 
+sudo apt-get install php5 php-pear php5-xdebug php5-curl php5-xmlrpc libssh2-php zend-framework
+sudo a2enmod rewrite
+sudo /etc/init.d/apache2 restart
+
+sudo pear upgrade
+sudo pear channel-discover pear.phpunit.de
+sudo pear channel-discover components.ez.no
+sudo pear channel-discover pear.symfony-project.com
+sudo pear channel-discover pear.php-tools.net
+sudo pear install "channel://pear.php.net/HTTP_Request2-2.0.0RC1" "channel://pear.php.net/Net_URL2-0.3.1"
+sudo pear install phpunit/PHPUnit
+sudo pear install pat/vfsStream-beta
+
+
+
+Setup in deployer project:
+
+cd library && ln -s /usr/share/php/libzend-framework-php/Zend
 ssh-keygen -t dsa -f tests/id_dsa
 
 
