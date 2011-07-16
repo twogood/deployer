@@ -5,9 +5,9 @@ class Repository
 {
 	private $repositoryPath;
 
-	public function __construct($repositoryPath)
+	public function __construct($config)
 	{
-		$this->repositoryPath = $repositoryPath;
+		$this->repositoryPath = $config['path'];
 	}
 
 	protected function readIniFile($pathComponents)

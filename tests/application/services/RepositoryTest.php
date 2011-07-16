@@ -15,7 +15,8 @@ class RepositoryTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidHost()
 	{
-		$repository = new services\Repository(vfsStream::url('/invalid-path'));
+    $config = array('path' => vfsStream::url('/invalid-path'));
+		$repository = new services\Repository($config);
 		$repository->getHost('invalid-host');
 	}
 
@@ -24,7 +25,8 @@ class RepositoryTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidSite()
 	{
-		$repository = new services\Repository(vfsStream::url('/invalid-path'));
+    $config = array('path' => vfsStream::url('/invalid-path'));
+		$repository = new services\Repository($config);
 		$repository->getSite('invalid-site');
 	}
 
@@ -43,7 +45,8 @@ class RepositoryTest extends PHPUnit_Framework_TestCase
 		$result = file_put_contents($siteFilePath, $iniData);
 		$this->assertNotEquals(false, $result);
 
-		$repository = new services\Repository($repositoryPath);
+    $config = array('path' => $repositoryPath);
+		$repository = new services\Repository($config);
 		$repository->getSite('valid-site');
 	}
 
@@ -64,7 +67,8 @@ EOF;
 		$result = file_put_contents($siteFilePath, $iniData);
 		$this->assertNotEquals(false, $result);
 
-		$repository = new services\Repository($repositoryPath);
+    $config = array('path' => $repositoryPath);
+		$repository = new services\Repository($config);
 		$site = $repository->getSite('valid-site');
 		$this->assertInstanceOf('models\Site', $site);
 
@@ -90,7 +94,8 @@ EOF;
 		$result = file_put_contents($hostFilePath, $iniData);
 		$this->assertNotEquals(false, $result);
 
-		$repository = new services\Repository($repositoryPath);
+    $config = array('path' => $repositoryPath);
+		$repository = new services\Repository($config);
 		$host = $repository->getHost('valid-host');
 		$this->assertInstanceOf('models\Host', $host);
 		$this->assertEquals('valid-host', $host->name);
@@ -109,7 +114,8 @@ EOF;
 			file_put_contents($sitesPath . '/' . $name, '');
 		}
 
-		$repository = new services\Repository($repositoryPath);
+    $config = array('path' => $repositoryPath);
+		$repository = new services\Repository($config);
 		$sites = $repository->getSiteNames();
 		$this->assertInternalType('array', $sites);
 		$this->assertEquals($expectedSites, $sites);
@@ -126,7 +132,8 @@ EOF;
 			mkdir($hostsPath. '/' . $name);
 		}
 
-		$repository = new services\Repository($repositoryPath);
+    $config = array('path' => $repositoryPath);
+		$repository = new services\Repository($config);
 		$hosts = $repository->getHostNames();
 		$this->assertEquals($expectedHosts, $hosts);
 	}
