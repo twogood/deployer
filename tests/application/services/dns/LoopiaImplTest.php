@@ -10,7 +10,11 @@ class LoopiaImplTest extends PHPUnit_Framework_TestCase
 
     $host = new models\Host('example-host');
 
-    $loopiaImpl = new services\dns\LoopiaImpl();
+    $loopia = $this->getMockBuilder('services\loopia\Loopia')
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $loopiaImpl = new services\dns\LoopiaImpl($loopia);
     $loopiaImpl->update($site, $host);
 
   }

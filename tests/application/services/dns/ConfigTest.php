@@ -10,13 +10,17 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
     $host = new models\Host('example-host');
 
-    $loopia = $this->getMock('services\dns\LoopiaImpl');
+    $loopia = $this->getMockBuilder('services\dns\LoopiaImpl')
+      ->disableOriginalConstructor()
+      ->getMock();
     $loopia
       ->expects($this->once())
       ->method('update')
       ->with($this->equalTo($site), $this->equalTo($host));
 
-    $factory = $this->getMock('services\dns\Factory');
+    $factory = $this->getMockBuilder('services\dns\Factory')
+      ->disableOriginalConstructor()
+      ->getMock();
     $factory
       ->expects($this->once())
       ->method('getImpl')
