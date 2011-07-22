@@ -23,4 +23,14 @@ class Encoder
     return self::encodeRequest(__FUNCTION__, func_get_args());
   }
 
+  public static function removeZoneRecord($username, $password, $customer_number, $domain, $subdomain, $record_id)
+  {
+    return self::encodeRequest(__FUNCTION__, func_get_args());
+  }
+
+  public static function addZoneRecord($username, $password, $customer_number, $domain, $subdomain, $record_obj)
+  {
+    return self::encodeRequest(__FUNCTION__, func_get_args());
+  }
+
 }

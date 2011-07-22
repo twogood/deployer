@@ -9,7 +9,7 @@ class LoopiaTest extends PHPUnit_Framework_TestCase
     $username = 'user';
     $password = 'pass';
     $customer_number = '';
-    $domain = 'sanktanna.nu';
+    $domain = 'example.com';
     $subdomain = '@';
 
     $requestXml = $encoder->getZoneRecords(
@@ -33,14 +33,152 @@ EOF;
     );
     $loopia = new services\loopia\Loopia($server, $config);
 
-    $zoneRecords = $loopia->getZoneRecords($domain, $subdomain);
+    $zoneRecords = $loopia->getZoneRecords($domain, null);
     $this->assertInternalType('array', $zoneRecords);
     $zoneRecord = $zoneRecords[0];
     $this->assertInstanceOf('models\loopia\ZoneRecord', $zoneRecord);
     $this->assertInstanceOf('models\loopia\ZoneRecordType', $zoneRecord->type);
 
-    //var_dump($zoneRecords);
+    //var_export($zoneRecords);
+  }
 
+  /**
+   * @expectedException  Exception
+   */
+  public function testGetZoneRecordsError()
+  {
+    $encoder = new services\loopia\Encoder();
+
+    $username = 'user';
+    $password = 'pass';
+    $domain = 'example.com';
+    $subdomain = '@';
+
+    $responseXml = <<<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+  <params>
+    <param>
+      <value>
+        <string>AUTH_ERROR</string>
+      </value>
+    </param>
+  </params>
+</methodResponse>
+EOF;
+
+    $server = $this->getMock('services\loopia\Server');
+    $server
+      ->expects($this->once())
+      ->method('xmlrpc')
+      ->will($this->returnValue($responseXml));
+
+    $config = array(
+      'username' => $username,
+      'password' => $password,
+    );
+    $loopia = new services\loopia\Loopia($server, $config);
+
+    $loopia->getZoneRecords($domain, $subdomain);
+  }
+
+  public function testRemoveZoneRecord()
+  {
+    $encoder = new services\loopia\Encoder();
+
+    $username = 'user';
+    $password = 'pass';
+    $customer_number = '';
+    $domain = 'example.com';
+    $subdomain = 'www';
+    $record_id = 42;
+
+    $requestXml = $encoder->removeZoneRecord(
+      $username, $password, $customer_number, $domain, $subdomain, $record_id);
+
+    $responseXml = <<<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+  <params>
+    <param>
+      <value>
+        <string>OK</string>
+      </value>
+    </param>
+  </params>
+</methodResponse>
+EOF;
+
+    $server = $this->getMock('services\loopia\Server');
+    $server
+      ->expects($this->once())
+      ->method('xmlrpc')
+      ->with($requestXml)
+      ->will($this->returnValue($responseXml));
+
+    $config = array(
+      'username' => $username,
+      'password' => $password,
+    );
+    $loopia = new services\loopia\Loopia($server, $config);
+
+    $result = $loopia->removeZoneRecord($domain, $subdomain, $record_id);
+    $this->assertEquals('OK', (string)$result);
+  }
+
+  public function testAddZoneRecord()
+  {
+    $encoder = new services\loopia\Encoder();
+
+    $username = 'user';
+    $password = 'pass';
+    $customer_number = '';
+    $domain = 'example.com';
+    $subdomain = 'www';
+    $priority = 0;
+    $type = 'CNAME';
+    $ttl = 3600;
+    $rdata = 'example.com';
+    $record = (object)array(
+      'priority' => $priority,
+      'type' => $type,
+      'ttl' => $ttl,
+      'record_id' => 0,
+      'rdata' => $rdata,
+      );
+    $requestXml = $encoder->addZoneRecord(
+      $username, $password, $customer_number, $domain, $subdomain, $record);
+
+    $responseXml = <<<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+  <params>
+    <param>
+      <value>
+        <string>OK</string>
+      </value>
+    </param>
+  </params>
+</methodResponse>
+EOF;
+
+    $server = $this->getMock('services\loopia\Server');
+    $server
+      ->expects($this->once())
+      ->method('xmlrpc')
+      ->with($requestXml)
+      ->will($this->returnValue($responseXml));
+
+    $config = array(
+      'username' => $username,
+      'password' => $password,
+    );
+    $loopia = new services\loopia\Loopia($server, $config);
+
+    $result = $loopia->addZoneRecord($domain, $subdomain, 
+      new \models\loopia\ZoneRecord(new \models\loopia\ZoneRecordType($type), $rdata));
+
+    $this->assertEquals('OK', (string)$result);
   }
 
 }

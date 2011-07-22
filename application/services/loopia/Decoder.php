@@ -12,27 +12,19 @@ class Decoder
 
   private static function convertZoneRecord($array)
   {
-    $result = new \models\loopia\ZoneRecord();
-
-		foreach ($array as $key => $value)
-		{
-			switch ($key)
-			{
-				case 'type':
-					$result->$key = new \models\loopia\ZoneRecordType($value);
-					break;
-				default:
-					$result->$key = $value;
-					break;
-			}
-    }  
-
-    return $result;
+    return \models\loopia\ZoneRecord::__set_state($array);
   }
 
   public static function decodeZoneRecords($xml)
   {
-    $records = self::decodeResponse($xml);
+    $response = self::decodeResponse($xml);
+
+    if (!is_array($response))
+    {
+      throw new \Exception((string)$response);
+    }
+
+    $records = $response;
 
     $zoneRecords = array();
     foreach ($records as $record)
@@ -41,6 +33,12 @@ class Decoder
     }
 
     return $zoneRecords;
+  }
+
+  public static function decodeStatus($xml)
+  {
+    $status = self::decodeResponse($xml);
+    return $status;
   }
 
 }

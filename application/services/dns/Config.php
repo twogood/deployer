@@ -14,6 +14,12 @@ class Config
   public function update($site, $host)
   {
     $impl = $this->factory->getImpl($site);
-    return $impl->update($site, $host);
+
+    $ip = gethostbyname($host->name);
+
+    foreach ($site->domainNames as $domainName)
+    {
+      $impl->update($domainName, $ip);
+    }
   }
 }

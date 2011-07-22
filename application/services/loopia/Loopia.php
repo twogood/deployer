@@ -25,10 +25,43 @@ class Loopia
       $this->password,
       '',
       $domain, 
-      $subdomain); 
+      empty($subdomain) ? '@' : $subdomain); 
 
     $responseXml = $this->server->xmlrpc($request);
     return Decoder::decodeZoneRecords($responseXml);
   }
+
+  public function removeZoneRecord($domain, $subdomain, $record_id)
+  {
+    $request = $this->encoder->removeZoneRecord(
+      $this->username,
+      $this->password,
+      '',
+      $domain, 
+      $subdomain,
+      $record_id); 
+
+    $responseXml = $this->server->xmlrpc($request);
+    return Decoder::decodeStatus($responseXml);
+  }
+
+  public function addZoneRecord($domain, $subdomain, \models\loopia\ZoneRecord $zoneRecord)
+  {
+    $record = (array)$zoneRecord;
+    $record['type'] = (string)$record['type'];
+    $record_obj = (object)$record;
+
+    $request = $this->encoder->addZoneRecord(
+      $this->username,
+      $this->password,
+      '',
+      $domain, 
+      $subdomain,
+      $record_obj); 
+
+    $responseXml = $this->server->xmlrpc($request);
+    return Decoder::decodeStatus($responseXml);
+  }
+
 }
 
