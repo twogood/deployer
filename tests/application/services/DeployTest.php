@@ -9,24 +9,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 
 		$host = new models\Host('test-host');
 
-    /*
-		$repository = $this->getMockBuilder('services\Repository')
-			->disableOriginalConstructor()
-			->getMock();
-		$repository
-			->expects($this->once())
-			->method('getHost')
-			->with($this->equalTo('test-host'))
-			->will($this->returnValue($host));
-
-		$repository
-			->expects($this->once())
-			->method('getSite')
-			->with($this->equalTo('test-site'))
-      ->will($this->returnValue($site));
-     */
-
-		$deployDirectory = $this->getMockBuilder('services\DeployDirectory')
+ 		$deployDirectory = $this->getMockBuilder('services\DeployDirectory')
 			->disableOriginalConstructor()
 			->getMock();
 		$deployDirectory
