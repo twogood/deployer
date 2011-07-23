@@ -17,5 +17,5 @@ class DeployFactoryTest extends PHPUnit_Framework_TestCase
 		$deployFactory = new services\DeployFactory(null, null);
 		$deployer = $deployFactory->getDeployer(models\SiteType::$DIRECTORY);
 		$this->assertInstanceOf('services\DeployDirectory', $deployer);
-	}
+  }
 }

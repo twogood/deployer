@@ -6,6 +6,7 @@ class ZoneRecordType
 {
   public static $VALID_TYPES = array(
     'A', 
+    'AAAA', 
     'CNAME', 
     'MX', 
     'NS',
@@ -13,11 +14,13 @@ class ZoneRecordType
 
   private $value;
 
-  public function __construct($value)
+  public function __construct($type)
   {
-    if (!in_array($value, self::$VALID_TYPES))
-      throw new InvalidArgumentException("Invalid type: $value");
-    $this->value = $value;
+    if ($type instanceof ZoneRecordType)
+      $this->value = $type->value;
+    elseif (!in_array($type, self::$VALID_TYPES))
+      throw new \InvalidArgumentException("Invalid type: $type");
+    $this->value = $type;
   }
 
   public function __tostring()

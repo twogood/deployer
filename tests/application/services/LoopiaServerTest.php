@@ -22,7 +22,6 @@ class LoopiaServerTest extends PHPUnit_Framework_TestCase
     }
   }
 
-
   private function getDomains($server)
   {
     $requestXml = services\loopia\Encoder::getDomains(

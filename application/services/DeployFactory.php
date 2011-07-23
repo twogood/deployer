@@ -29,6 +29,6 @@ class DeployFactory
 				throw new \InvalidArgumentException(
 					'Unknown or missing site type: '. $siteType);
 		}
-	}
+  }
 }
 

@@ -18,6 +18,20 @@ class ServiceFactoryTest extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('services\Deploy', $deployService);
 	}
 
+  public function testGetDnsConfig()
+  {
+    $config = array(
+      'dns' => array( 
+        'loopia' => array(
+          'username' => 'user',
+          'password' => 'pass',
+        ) 
+      )
+    );
+		$serviceFactory = new services\ServiceFactory($config);
+		$dnsConfig = $serviceFactory->getDnsConfig();
+		$this->assertInstanceOf('services\dns\Config', $dnsConfig);
+  }
 }
 
 

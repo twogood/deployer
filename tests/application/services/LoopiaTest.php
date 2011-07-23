@@ -145,7 +145,7 @@ EOF;
       'ttl' => $ttl,
       'record_id' => 0,
       'rdata' => $rdata,
-      );
+    );
     $requestXml = $encoder->addZoneRecord(
       $username, $password, $customer_number, $domain, $subdomain, $record);
 
@@ -179,6 +179,54 @@ EOF;
       new \models\loopia\ZoneRecord(new \models\loopia\ZoneRecordType($type), $rdata));
 
     $this->assertEquals('OK', (string)$result);
+  }
+
+  public function SKIPtestAddRemoveZoneRecord()
+  {
+    if (getenv('FAST_TESTS'))
+    {
+      $this->markTestSkipped("addRemoveZoneRecord is a live test");
+      return;
+    }
+
+    $username  = getenv('LOOPIA_USERNAME');
+    $password  = getenv('LOOPIA_PASSWORD');
+    $domain    = getenv('LOOPIA_DOMAIN');
+    $subdomain = null;
+
+    if (!$username || !$password || !$domain)
+    {
+      $this->markTestSkipped('LOOPIA_USERNAME, LOOPIA_PASSWORD or LOOPIA_DOMAIN are not set');
+    }
+
+    $type = 'A';
+    $rdata = '127.0.0.1';
+
+    $server = new services\loopia\Server();
+    $config = array(
+      'username' => $username,
+      'password' => $password,
+    );
+    $loopia = new services\loopia\Loopia($server, $config);
+
+    $result = $loopia->addZoneRecord($domain, $subdomain, 
+      new \models\loopia\ZoneRecord(new \models\loopia\ZoneRecordType($type), $rdata));
+
+    $this->assertEquals('OK', (string)$result);
+
+    $zoneRecords = $loopia->getZoneRecords($domain, $subdomain);
+    $removeZoneRecordResult = array();
+    foreach ($zoneRecords as $zoneRecord)
+    {
+      if ($zoneRecord->type == $type && $zoneRecord->rdata == $rdata)
+      {
+        $removeZoneRecordResult[] = $loopia->removeZoneRecord(
+          $domain, $subdomain, $zoneRecord->record_id);
+      }
+    }
+
+    $this->assertEquals(1, count($removeZoneRecordResult));
+    $this->assertEquals('OK', $removeZoneRecordResult[0]);
   }
 
 }

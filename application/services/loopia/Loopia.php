@@ -38,7 +38,7 @@ class Loopia
       $this->password,
       '',
       $domain, 
-      $subdomain,
+      empty($subdomain) ? '@' : $subdomain,
       $record_id); 
 
     $responseXml = $this->server->xmlrpc($request);
@@ -56,7 +56,7 @@ class Loopia
       $this->password,
       '',
       $domain, 
-      $subdomain,
+      empty($subdomain) ? '@' : $subdomain,
       $record_obj); 
 
     $responseXml = $this->server->xmlrpc($request);

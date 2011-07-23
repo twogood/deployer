@@ -38,6 +38,13 @@ class ServiceFactory
   }
 
 
+  public function getDnsConfig()
+  {
+    $dnsConfig = $this->config['dns'];
+    return new dns\Config(new dns\Factory($dnsConfig));
+  }
+
+
 
 }
 
