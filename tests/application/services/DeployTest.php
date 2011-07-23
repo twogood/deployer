@@ -27,7 +27,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 			->with($this->equalTo($site->type))
 			->will($this->returnValue($deployDirectory));
 
-    $deployService = new services\Deploy(/*$repository,*/ $deployFactory);
+    $deployService = new services\Deploy($deployFactory);
 		$deployService->deploy($site, $host);
 	}
 
