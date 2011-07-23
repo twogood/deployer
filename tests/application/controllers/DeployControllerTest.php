@@ -102,6 +102,13 @@ class DeployControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
       ->method('getRepository')
       ->will($this->returnValue($repository));
 
+    // TODO
+    $dnsConfig = null;
+    $serviceFactory
+      ->expects($this->once())
+      ->method('getDnsConfig')
+      ->will($this->returnValue($dnsConfig));
+
     Zend_Registry::set('serviceFactory', $serviceFactory);
 
     $this->request->setMethod('POST')

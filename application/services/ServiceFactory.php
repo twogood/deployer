@@ -32,7 +32,7 @@ class ServiceFactory
     $apacheService = new Apache($apacheFactory);
 
     $deployFactory = new DeployFactory($apacheService, $secureShellService);
-    $deployService = new Deploy($this->getRepository(), $deployFactory);
+    $deployService = new Deploy($deployFactory);
 
     return $deployService;
   }
